@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 
 const sequelize=require('./util/database');
 
-const Expense=require('./models/Expenses')
 var cors=require('cors');
 
 const app = express();
@@ -25,7 +24,7 @@ app.use('/user',userRoutes);
 
 
 
-sequelize.sync({force:true}).then(result=>{
+sequelize.sync().then(result=>{
     app.listen(3000);
 })
     
