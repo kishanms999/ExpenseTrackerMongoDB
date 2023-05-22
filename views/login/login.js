@@ -7,10 +7,11 @@ async function login(e){
         }
         console.log(loginDetails)
         const response = await axios.post("http://localhost:3000/user/login",loginDetails)
-            if(response.status === 201){
-                window.alert("User logged in successfully");
+            if(response.status === 200){
+                alert(response.data.message);
+                window.location.href="../expense.html"
             } else {
-                throw new Error('Failed to login')
+                throw new Error(response.data.message)
             }
     } catch(err){
         document.body.innerHTML+= `<div style="color:red;">${err}</div>`;
