@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt=require('bcrypt');
 
 function isstringinvalid(string){
     if(string== undefined || string.length === 0){
@@ -16,8 +17,12 @@ exports.signup = async (req,res,next)=>{
         return res.status(400).json({err:"Bad parameters. Something is missing"})
     }
 
-    const data = await User.create({name,email,password});
-    res.status(201).json({message:'Successfully created new user'});
+    const saltrounds=10;
+    bcrypt.hash(password,saltrounds, async (err,hash)=>{
+        await User.create({name,email,password:hash});
+        res.status(201).json({message:'Successfully created new user'});
+    })    
+
     } catch(err){
         res.status(500).json(err)
     }
@@ -31,11 +36,17 @@ exports.login = async (req,res,next)=>{
         }
         const user = await User.findAll({where:{email}});
         if(user.length>0){
-            if(user[0].password === password){
-                res.status(200).json({success:true, message:"User logged in successfully"})
-            } else{
-                res.status(400).json({success:false, message:"Password is incorrect"})
-            } 
+            bcrypt.compare(password,user[0].password,(err,result)=>{
+                if(err){
+                    throw new Error('Something went wrong')
+                }
+                if(result === true){
+                    res.status(200).json({success:true, message:"User logged in successfully"})
+                } else{
+                    res.status(400).json({success:false, message:"Password is incorrect"})
+                } 
+            })
+            
         } else{
             res.status(404).json({success:false, message:"User does not exist"})
         }
