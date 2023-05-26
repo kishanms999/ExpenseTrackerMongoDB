@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Expense Tracker App</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <form onsubmit="expenseDetails(event)" >
+            <label for="expenseamount">Choose Expense Amount</label>
+            <input type="number" name="expenseamount" id="expenseamount" required>
+            <label for="description">Choose Description</label>
+            <input type="text" name="description" id="description" required>
+            <label for="category">Choose a category</label>
+            <select name="category" id="category">
+                <option value="fuel">fuel</option>
+                <option value="food">food</option>
+                <option value="electricity">electricity</option>
+                <option value="movie">Movie</option>
+            </select>
+            <button>Add Expense</button>
+        </form>
+        <ul id="ListOfExpenses"></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.js"></script>
+        <script src="./expense.js"></script>
+    </body>
+</html>

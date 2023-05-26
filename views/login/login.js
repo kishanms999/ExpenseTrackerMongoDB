@@ -9,7 +9,9 @@ async function login(e){
         const response = await axios.post("http://localhost:3000/user/login",loginDetails)
             if(response.status === 200){
                 alert(response.data.message);
-                window.location.href="../expense.html"
+                console.log(response.data)
+                localStorage.setItem('token',response.data.token)
+                window.location.href="../expense/expense.html"
             } else {
                 throw new Error(response.data.message)
             }
