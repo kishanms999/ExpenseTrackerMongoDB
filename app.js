@@ -7,27 +7,36 @@ const sequelize=require('./util/database');
 var cors=require('cors');
 
 const app = express();
+const dotenv=require('dotenv');
 
 app.use(cors());
 
+dotenv.config();
+
 const User = require('./models/User');
 const Expense = require('./models/Expenses');
+const Order = require('./models/Order');
+
 
 const expenseRoutes=require('./routes/expense');
 const userRoutes=require('./routes/user');
+const purchaseRoutes=require('./routes/purchase');
 
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use('/purchase',purchaseRoutes);
 app.use('/expense',expenseRoutes);
 app.use('/user',userRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
-sequelize.sync().then(result=>{
+User.hasMany(Order);
+Order.belongsTo(User);
+
+sequelize.sync({force:true}).then(result=>{
     app.listen(3000);
 })
     
