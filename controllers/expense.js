@@ -1,4 +1,6 @@
 const Expense = require('../models/Expenses');
+const User = require('../models/User');
+
 
 function isstringinvalid(string){
     if(string== undefined || string.length === 0){
@@ -16,6 +18,13 @@ exports.insertExpense = async (req,res,next)=>{
         }
 
         const expense = await req.user.createExpense({expenseamount, description, category}) // "or use" Expense.create({expenseamount, description, category,userId:req.user.id});
+        const totalExpense = Number(req.user.totalExpenses) + Number(expenseamount);
+        console.log(totalExpense);
+        User.update({
+            totalExpenses:totalExpense
+        },{
+            where : {id:req.user.id}
+        })
         return res.status(201).json({expense,success:true});
     } catch(err){
         return res.status(500).json({success:false,error:err})
