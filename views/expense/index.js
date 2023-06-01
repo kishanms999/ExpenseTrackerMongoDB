@@ -63,7 +63,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const expenseElemId=`expense-${expense.id}`
     const childHTML=`<li id=${expenseElemId}>${expense.expenseamount}-${expense.description}-${expense.category}
         <button onclick='deleteExpense(event,${expense.id})'>Delete Expense</button>
-        <button onclick=editExpense('${expense.expenseamount}','${expense.description}','${expense.category}','${expense.id}')>Edit Expense</button>
         </li>`
     parentNode.innerHTML=parentNode.innerHTML+childHTML    
 }
