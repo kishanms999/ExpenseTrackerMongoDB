@@ -95,7 +95,15 @@ function showLeaderboard(){
         })
     }
     document.getElementById("message").appendChild(inputElement);
-
+    const downloadButton = document.createElement("input")
+    downloadButton.type = "button"
+    downloadButton.value = 'Download'
+    downloadButton.onclick= async()=>{
+        const token = localStorage.getItem('token')
+        const downloadLeaderboard = await axios.get('http://localhost:3000/premium/downloadExpenses', { headers: {"Authorization" : token} })
+        console.log(downloadLeaderboard);
+    }
+    document.getElementById("message").appendChild(downloadLeaderboard);
 }
 
 function removeFromScreen(expenseId){
