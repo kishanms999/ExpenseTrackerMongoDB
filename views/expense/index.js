@@ -94,16 +94,6 @@ function showLeaderboard(){
             leaderboardElem.innerHTML += `<li>Name - ${userDetails.name} Total Expense - ${userDetails.totalExpenses} </li>`
         })
     }
-    document.getElementById("message").appendChild(inputElement);
-    const downloadButton = document.createElement("input")
-    downloadButton.type = "button"
-    downloadButton.value = 'Download'
-    downloadButton.onclick= async()=>{
-        const token = localStorage.getItem('token')
-        const downloadLeaderboard = await axios.get('http://localhost:3000/premium/downloadExpenses', { headers: {"Authorization" : token} })
-        console.log(downloadLeaderboard);
-    }
-    document.getElementById("message").appendChild(downloadLeaderboard);
 }
 
 function removeFromScreen(expenseId){
@@ -114,6 +104,25 @@ function removeFromScreen(expenseId){
     if(childNodeToBeDeleted){
         parentNode.removeChild(childNodeToBeDeleted);
     }
+}
+
+function download(){
+    const token=localStorage.getItem('token');
+    axios.get('http://localhost:3000/expense/download', { headers: {"Authorization" : token} })
+    .then((response) => {
+        if(response.status === 200){
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message)
+        }
+
+    })
+    .catch((err) => {
+        showError(err)
+    });
 }
 
 function editExpense(amount,description,category,expenseId){
@@ -153,4 +162,8 @@ document.getElementById('rzp-button1').onclick=async function (e){
         console.log(response)
         alert('Something went wrong')
     });
+}
+
+function showError(err){
+    document.body.innerHTML += `<div style="color:red;"> ${err}</div>`
 }

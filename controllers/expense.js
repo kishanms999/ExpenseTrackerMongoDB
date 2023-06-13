@@ -1,6 +1,8 @@
 const Expense = require('../models/Expenses');
 const User = require('../models/User');
 const sequelize=require('../util/database');
+const UserServices = require('../services/userservices');
+const S3Services = require('../services/S3services');
 
 
 function isstringinvalid(string){
@@ -74,6 +76,26 @@ exports.deleteExpense = async (req,res,next)=>{
         await t.rollback();
         console.log(err);
         return res.status(500).json({success:false,message:"Failed"});
+    }
+}
+
+
+exports.downloadexpense = async (req,res)=>{
+    try{
+        const premUser = req.user.ispremiumuser;
+        if(premUser){
+            const expenses = await UserServices.getExpenses(req);
+            const stringifiedExpenses = JSON.stringify(expenses);
+            const userId = req.user.id;
+            const filename= `Expense${userId}/${new Date()}.txt`;
+            const fileUrl = await S3Services.uploadToS3(stringifiedExpenses,filename);
+            res.status(200).json({fileUrl, success:true})
+        } else{
+            res.status(401).json({fileUrl:'',success:false,message:'Not a premium user'})
+        }
+    } catch(err){
+        console.log(err);
+        res.status(500).json({fileUrl:'',success:false,err:err})
     }
 }
 
