@@ -125,6 +125,23 @@ function download(){
     });
 }
 
+async function showDownloads(){
+    try{
+    const token= localStorage.getItem('token');
+    const response= await axios.get(`http://localhost:3000/expense/downloadedfiles`,{headers:{'Authorization':token}});
+
+    const downloadedfileslist=document.getElementById('downloadedfileslst');
+    response.data.message.forEach((file) => {
+        downloadedfileslist.innerHTML+=`<li><a href=${file.url}>${file.url}</a></li>`
+    })
+        
+
+    }catch(err){
+        console.log(err);
+    }
+
+}
+
 function editExpense(amount,description,category,expenseId){
     document.getElementById('xpamnt').value=amount;
     document.getElementById('descr').value=description;

@@ -12,6 +12,8 @@ router.get('/get-expenses',userauthentication.authenticate,expenseController.get
 
 router.delete('/delete-expense/:id',userauthentication.authenticate,expenseController.deleteExpense);
 
-router.get('/download',userauthentication.authenticate,expenseController.downloadexpense)
+router.get('/download',userauthentication.authenticate,expenseController.downloadexpense);
+
+router.get('/downloadedfiles',userauthentication.authenticate,expenseController.downloadedexpenses);
 
 module.exports = router;

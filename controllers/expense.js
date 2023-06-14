@@ -1,5 +1,6 @@
 const Expense = require('../models/Expenses');
 const User = require('../models/User');
+const DownloadedFiles = require('../models/downloadedfiles');
 const sequelize=require('../util/database');
 const UserServices = require('../services/userservices');
 const S3Services = require('../services/S3services');
@@ -89,6 +90,7 @@ exports.downloadexpense = async (req,res)=>{
             const userId = req.user.id;
             const filename= `Expense${userId}/${new Date()}.txt`;
             const fileUrl = await S3Services.uploadToS3(stringifiedExpenses,filename);
+            await DownloadedFiles.create({url:fileUrl,userId:userId});
             res.status(200).json({fileUrl, success:true})
         } else{
             res.status(401).json({fileUrl:'',success:false,message:'Not a premium user'})
@@ -96,6 +98,16 @@ exports.downloadexpense = async (req,res)=>{
     } catch(err){
         console.log(err);
         res.status(500).json({fileUrl:'',success:false,err:err})
+    }
+}
+
+exports.downloadedexpenses = async (req,res)=>{
+    try{
+        const downloadedfiles = await DownloadedFiles.findAll({where:{userId:req.user.id}});
+        res.status(200).json({success:true,message:downloadedfiles});
+    } catch(err){
+        console.log(err);
+        res.status(500).json({success:false,message:err})
     }
 }
 
