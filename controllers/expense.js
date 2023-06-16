@@ -41,8 +41,22 @@ exports.insertExpense = async (req,res,next)=>{
 
 exports.getexpenses = async (req,res,next)=>{
     try{
-        const expenses=await req.user.getExpenses();   //"or use"req.user.getExpenses()  Expense.findAll({where:{userId:req.user.id}});
-        return res.status(200).json({expenses,success:true});
+        const page=+req.query.page||1;
+        const limit=5;
+        const total=await req.user.getExpenses();   //"or use"req.user.getExpenses()  Expense.findAll({where:{userId:req.user.id}});
+        const expenses =await req.user.getExpenses({
+            offset:(page-1)*limit,
+            limit:limit
+           });
+        return res.status(200).json({expenses,success:true,pagedata:{
+            success:true,
+            currentpage:page,
+            nextpage:page+1,
+            previouspage:page-1,
+            hasnextpage:limit*page<total.length,
+            haspreviouspage:page>1,
+            lastpage:Math.ceil(total.length/limit),
+        }});
     } catch(err){
         console.log('Get expense is failing',JSON.stringify(err));
         return res.status(500).json({error:err,success:false})

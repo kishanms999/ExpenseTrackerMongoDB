@@ -33,6 +33,7 @@ function parseJwt (token) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+        const page=1;
         const token=localStorage.getItem('token');
         const decodeToken = parseJwt(token);
         console.log(decodeToken);
@@ -41,10 +42,11 @@ window.addEventListener("DOMContentLoaded", () => {
             showPremiumuserMessage()
             showLeaderboard()
         }
-        axios.get('http://localhost:3000/expense/get-expenses',{headers:{"Authorization":token}}).then((response)=>{
+        axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`,{headers:{"Authorization":token}}).then((response)=>{
             response.data.expenses.forEach(expense=>{
                 showOnScreen(expense)
             })
+            showpages(response.data.pagedata);
             }).catch((error)=>{
                 console.log(error)
             })
@@ -184,3 +186,53 @@ document.getElementById('rzp-button1').onclick=async function (e){
 function showError(err){
     document.body.innerHTML += `<div style="color:red;"> ${err}</div>`
 }
+
+
+   async function showpages({currentpage,nextpage,previouspage,hasnextpage,haspreviouspage,lastpage}){
+        try{
+                const pages= document.getElementById('pages');
+                pages.innerHTML='';
+
+                    if(haspreviouspage){
+                        const btn2=document.createElement('button');
+                        btn2.innerHTML=previouspage;
+                        btn2.addEventListener('click',()=>getExpenses(previouspage))
+                        pages.appendChild(btn2);
+                    }
+                    const btn1=document.createElement('button');
+                    btn1.innerHTML=`<h3>${currentpage}</h3>`
+                    btn1.addEventListener('click',()=>getExpenses(currentpage))
+                    pages.appendChild(btn1);
+
+                    if(hasnextpage){
+                        const btn3=document.createElement('button')
+                        btn3.innerHTML=nextpage;
+                        btn3.addEventListener('click',()=>getExpenses(nextpage))
+                        pages.appendChild(btn3);
+                    }
+
+        }catch(err){
+                showError(err);
+        }
+   }
+
+
+async function getExpenses(page){
+    try{
+        const token= localStorage.getItem('token');
+        const response =await axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`,{headers:{"Authorization":token}});
+
+        const parentNode=document.getElementById('ListOfExpenses');
+        parentNode.innerHTML="";
+
+
+        response.data.expenses.forEach(expense=>{
+            showOnScreen(expense)
+        })
+        showpages(response.data.pagedata);
+        
+
+    }catch(err){
+        showError(err);
+    }
+   }
