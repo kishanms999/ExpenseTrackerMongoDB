@@ -1,3 +1,10 @@
+const limitselect=document.getElementById('limit');
+
+limitselect.addEventListener('change',()=>{
+    const limit=parseInt(limitselect.value);
+    localStorage.setItem('limit',limit);
+})
+
 function expenseDetails(event){
     event.preventDefault();
     
@@ -33,6 +40,7 @@ function parseJwt (token) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+        const limit=localStorage.getItem('limit');
         const page=1;
         const token=localStorage.getItem('token');
         const decodeToken = parseJwt(token);
@@ -42,7 +50,7 @@ window.addEventListener("DOMContentLoaded", () => {
             showPremiumuserMessage()
             showLeaderboard()
         }
-        axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`,{headers:{"Authorization":token}}).then((response)=>{
+        axios.get(`http://localhost:3000/expense/get-expenses?page=${page}&limit=${limit}`,{headers:{"Authorization":token}}).then((response)=>{
             response.data.expenses.forEach(expense=>{
                 showOnScreen(expense)
             })
@@ -219,8 +227,9 @@ function showError(err){
 
 async function getExpenses(page){
     try{
+        const limit=localStorage.getItem('limit');
         const token= localStorage.getItem('token');
-        const response =await axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`,{headers:{"Authorization":token}});
+        const response =await axios.get(`http://localhost:3000/expense/get-expenses?page=${page}&limit=${limit}`,{headers:{"Authorization":token}});
 
         const parentNode=document.getElementById('ListOfExpenses');
         parentNode.innerHTML="";

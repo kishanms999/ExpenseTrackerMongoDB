@@ -42,7 +42,7 @@ exports.insertExpense = async (req,res,next)=>{
 exports.getexpenses = async (req,res,next)=>{
     try{
         const page=+req.query.page||1;
-        const limit=5;
+        const limit=+req.query.limit||5;
         const total=await req.user.getExpenses();   //"or use"req.user.getExpenses()  Expense.findAll({where:{userId:req.user.id}});
         const expenses =await req.user.getExpenses({
             offset:(page-1)*limit,

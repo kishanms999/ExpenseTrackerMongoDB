@@ -22,7 +22,15 @@
         <div id="message"></div>
         <button id="rzp-button1">Buy Premium</button>
         <button onclick="download()" id="downloadexpense">Download File</button>
-        <button onclick="showDownloads()" id="downloadedfiles">View Downloaded Expenses</button>
+        <button onclick="showDownloads()" id="downloadedfiles">View Downloaded Expenses</button> <br>
+        <label for="limit">Set Page Limit</label>
+            <select id="limit" class=".form-select">
+                <option></option>
+                <option>5</option>
+                <option>10</option>
+                <option>15</option>
+                <option>20</option>
+            </select>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <h1>Expenses</h1>
         <ul id="ListOfExpenses"></ul>
