@@ -1,15 +1,25 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs=require('fs');
 
 const sequelize=require('./util/database');
 
 var cors=require('cors');
+var helmet=require('helmet');
+var morgan=require('morgan');
 
 const app = express();
 const dotenv=require('dotenv');
 
+const accessLogStream=fs.createWriteStream(
+    path.join(__dirname,'access.log'),
+    {flags:'a'}
+    );
+
 app.use(cors());
+app.use(helmet());
+app.use(morgan('combined',{stream:accessLogStream}));
 
 dotenv.config();
 
@@ -52,7 +62,7 @@ DowloadedFiles.belongsTo(User);
 
 
 sequelize.sync().then(result=>{
-    app.listen(3000);
+    app.listen(process.env.PORT||3000);
 })
     
 .catch(err=>{
