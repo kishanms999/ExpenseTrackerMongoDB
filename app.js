@@ -3,14 +3,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs=require('fs');
 
+const app = express();
+const dotenv=require('dotenv');
+
+dotenv.config();
+
 const sequelize=require('./util/database');
 
 var cors=require('cors');
 var helmet=require('helmet');
 var morgan=require('morgan');
-
-const app = express();
-const dotenv=require('dotenv');
 
 const accessLogStream=fs.createWriteStream(
     path.join(__dirname,'access.log'),
@@ -20,8 +22,6 @@ const accessLogStream=fs.createWriteStream(
 app.use(cors());
 app.use(helmet());
 app.use(morgan('combined',{stream:accessLogStream}));
-
-dotenv.config();
 
 const User = require('./models/User');
 const Expense = require('./models/Expenses');
