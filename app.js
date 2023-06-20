@@ -11,17 +11,17 @@ dotenv.config();
 const sequelize=require('./util/database');
 
 var cors=require('cors');
-var helmet=require('helmet');
-var morgan=require('morgan');
+// var helmet=require('helmet');
+// var morgan=require('morgan');
 
-const accessLogStream=fs.createWriteStream(
-    path.join(__dirname,'access.log'),
-    {flags:'a'}
-    );
+// const accessLogStream=fs.createWriteStream(
+//     path.join(__dirname,'access.log'),
+//     {flags:'a'}
+//     );
 
 app.use(cors());
-app.use(helmet());
-app.use(morgan('combined',{stream:accessLogStream}));
+// app.use(helmet());
+// app.use(morgan('combined',{stream:accessLogStream}));
 
 const User = require('./models/User');
 const Expense = require('./models/Expenses');
