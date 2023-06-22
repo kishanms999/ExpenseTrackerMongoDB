@@ -11,7 +11,7 @@ dotenv.config();
 const sequelize=require('./util/database');
 
 var cors=require('cors');
-// var helmet=require('helmet');
+// var helmet=require('helmet');(used for helmet)
 // var morgan=require('morgan');
 
 // const accessLogStream=fs.createWriteStream(
