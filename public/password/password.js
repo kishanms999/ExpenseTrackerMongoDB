@@ -5,7 +5,7 @@ async function resetpass(e){
             email:e.target.emailid.value
         }
         console.log(resetDetails)
-        const response = await axios.post("http://54.85.152.105:3000/password/forgotpassword ",resetDetails)
+        const response = await axios.post("http://localhost:3000/password/forgotpassword ",resetDetails)
             document.body.innerHTML+= `<div>${response.data.message}</div>`;
     } catch(err){
         document.body.innerHTML+= `<div style="color:red;">${err}</div>`;

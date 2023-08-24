@@ -6,7 +6,7 @@ async function login(e){
             password:e.target.password.value
         }
         console.log(loginDetails)
-        const response = await axios.post("http://54.85.152.105:3000/user/login",loginDetails)
+        const response = await axios.post("http://localhost:3000/user/login",loginDetails)
             if(response.status === 200){
                 alert(response.data.message);
                 console.log(response.data)

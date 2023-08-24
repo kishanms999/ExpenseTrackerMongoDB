@@ -14,13 +14,11 @@ apiKey.apiKey= process.env.API_KEY ;
 const forgotPassword = async (req,res) =>{
     try{
         const { email } =  req.body;
-        const user = await User.findOne({where : { email }});
+        const user = await User.findOne({email: email });
         if(user){
             const id = uuid.v4();
-            user.createForgotpassword({ id , active: true })
-                .catch(err => {
-                    throw new Error(err)
-                })
+            const forgotpassword = new ForgotPassword({id:id,isactive:true,userId:user._id})
+            await forgotpassword.save();
         const tranEmailApi = new Sib.TransactionalEmailsApi()
         const sendEmail = { 
             to: [{ email: email }], 
@@ -48,11 +46,9 @@ const forgotPassword = async (req,res) =>{
 const resetPassword = async (req, res) => { 
     try { 
       const id = req.params.id; 
-      const forgotpasswordrequest = await Forgotpassword.findOne({ 
-        where: { id }, 
-      }); 
+      const forgotpasswordrequest = await  ForgotPassword.findOne({id:id})
       if (forgotpasswordrequest) { 
-        forgotpasswordrequest.update({ active: false }); 
+        await forgotpasswordrequest.updateOne({isactive:false})
         res.status(200).send(`<!DOCTYPE html> 
           <html> 
           <head> 
@@ -77,12 +73,8 @@ const resetPassword = async (req, res) => {
     try { 
       const { newpassword } = req.query; 
       const { resetpasswordid } = req.params; 
-      resetpasswordrequest = await Forgotpassword.findOne({ 
-        where: { id: resetpasswordid }, 
-      }); 
-      const user = await User.findOne({ 
-        where: { id: resetpasswordrequest.userId }, 
-      }); 
+      const resetpasswordrequest= await  ForgotPassword.findOne({ id: resetpasswordid }) 
+      const user= await  User.findOne({ _id : resetpasswordrequest.userId}) 
       if (user) { 
         const saltRounds = 10; 
         bcrypt.genSalt(saltRounds, function (err, salt) { 
@@ -95,11 +87,11 @@ const resetPassword = async (req, res) => {
               console.log(err); 
               throw new Error(err); 
             } 
-            user.update({ password: hash }).then(() => { 
-              res 
-                .status(201) 
-                .json({ message: "Successfuly update the new password" }); 
-            }); 
+            User.updateOne({_id:user._id},{ password: hash }).then(() => {
+              res.status(201).json({message: 'Successfuly updated the new password'})
+          }).catch((err)=>{
+             return res.status(500).json({message:err})
+          })
           }); 
         }); 
       } else { 

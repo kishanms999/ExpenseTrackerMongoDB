@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 // const fs=require('fs');
 
 const app = express();
@@ -8,10 +9,8 @@ const dotenv=require('dotenv');
 
 dotenv.config();
 
-const sequelize=require('./util/database');
-
 var cors=require('cors');
-// var helmet=require('helmet');(used for helmet)
+// var helmet=require('helmet');
 // var morgan=require('morgan');
 
 // const accessLogStream=fs.createWriteStream(
@@ -51,23 +50,12 @@ app.use((req,res) => {
     res.sendFile(path.join(__dirname,`public/${req.url}`))
 })
 
-User.hasMany(Expense);
-Expense.belongsTo(User);
 
-User.hasMany(Order);
-Order.belongsTo(User);
-
-User.hasMany(Forgotpassword);
-Forgotpassword.belongsTo(User);
-
-User.hasMany(DowloadedFiles);
-DowloadedFiles.belongsTo(User);
-
-
-sequelize.sync().then(result=>{
+mongoose
+.connect(process.env.MONGOOSE_DB)
+.then(()=>{
+    console.log("Connection Succesfull");
+})
+.then(()=>{
     app.listen(process.env.PORT||3000);
-})
-    
-.catch(err=>{
-    console.log(err);
-})
+}).catch(err=>console.log(err));
